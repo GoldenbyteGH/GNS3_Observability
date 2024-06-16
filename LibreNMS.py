@@ -12,6 +12,7 @@ Requirements vars from .env:
 
 
 from dotenv import load_dotenv
+from time import sleep
 import requests
 import os
 import json
@@ -48,9 +49,16 @@ class LibreNMS:
     def get_flex_devices_ip(self, flex_ids):
         IPs = []
         for flex in flex_ids:
-            IPs.append((flex[0], json.loads(requests.get(
-                "{}/api/v0/devices/{}/ip".format(self.librenms_url, flex[1]),
-                headers=self.headers).text)))
+            while (True):
+                sleep(0.5)
+                req = json.loads(requests.get(
+                        "{}/api/v0/devices/{}/ip".format(self.librenms_url, flex[1]),
+                        headers=self.headers).text)
+                # check LibreNMS data consistency 
+                if req['status'] == 'ok':
+                    break
+            IPs.append((flex[0],req))
+        print(IPs)
         return (IPs)
 
     def get_port_by_id(self, port_id):

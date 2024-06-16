@@ -20,7 +20,8 @@ class NetDevice:
         self.tftp_path = tftp_path
 
     def addinterfaces(self, ifalias, ifname, ip):
-        self.interfaces.append((ifalias, ifname, ip))
+        if 'Lo' not in ifname:
+            self.interfaces.append((ifalias, ifname, ip))
 
     def del_tftp_conf(self):
         try:
@@ -57,24 +58,27 @@ device_list.clear()
 # add flex devices +  tftp_conf
 lab_net.scan_flex_devices()
 lab_devices = lab_net.get_flex_devices_ip(lab_net.get_flex_ids())
-
+print(len(lab_devices))
 # todo--> inside class?
 for ld in lab_devices:
-    try:
-        netdevice = NetDevice(ld[0])
-        for interface in ld[1]['addresses']:
-            port_alias = lab_net.get_port_by_id(interface['port_id'])['ifDescr']
-            port_name = lab_net.get_port_by_id(interface['port_id'])['ifName']
+    netdevice = NetDevice(ld[0])
+    for interface in ld[1]['addresses']:
+        port_alias = lab_net.get_port_by_id(interface['port_id'])['ifDescr']
+        port_name = lab_net.get_port_by_id(interface['port_id'])['ifName']
 
-            netdevice.addinterfaces(port_alias, port_name, interface['ipv4_address'])
 
-            if lab_net.flex_net.strip('0') in interface['ipv4_address']:
-                f_addresses.append(interface['ipv4_address'])
-        device_list.append(netdevice)
-    except Exception as error:
-        print(error)
-        exit()
+        netdevice.addinterfaces(port_alias, port_name, interface['ipv4_address'])
 
+        if lab_net.flex_net.strip('0') in interface['ipv4_address']:
+            f_addresses.append(interface['ipv4_address'])
+
+    device_list.append(netdevice)
+#
+#    except Exception as error:
+#        print(error)
+#        print('errore')
+#        exit()
+#
 # create device_config in tftpboot
 for device in device_list:
     device.add_tftp_conf()
