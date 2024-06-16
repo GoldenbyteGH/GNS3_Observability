@@ -1,0 +1,8 @@
+Scanning IPs:
+*.........................................................................................................................................++..............................+.......................................+..........................................-
+
+Scanned 254 IPs: 1 known devices, added 4 devices, failed to add 1 devices
+Runtime: 95.86 seconds
+4 devices are going to be delete
+R1
+{'ipv4_address_id': 173, 'ipv4_address': '172.16.50.124', 'ipv4_prefixlen': 24, 'ipv4_network_id': '7', 'port_id': 304, 'context_name': ''}

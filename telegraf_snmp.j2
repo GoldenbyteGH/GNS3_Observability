@@ -1,0 +1,45 @@
+[[inputs.snmp]]
+  agents = [{% for address in flex_ips  %}
+		"udp://{{address}}:161",
+		{% endfor %}]
+  version = 2
+  community = "public"
+  interval = "60s"
+
+  [[inputs.snmp.field]]
+    name = "hostname"
+    oid = "RFC1213-MIB::sysName.0"
+
+  [[inputs.snmp.table]]
+    name = "ifTable"  # Descriptive name for the table
+    inherit_tags = [ "hostname" ]
+    oid = "IF-MIB::ifXTable"
+
+    [[inputs.snmp.table.field]]
+      name = "ifName"
+      oid = "IF-MIB::ifName"
+      is_tag = true
+
+
+  [[inputs.snmp.table]]
+    name = "envMonTemperature"  # Descriptive name for the table
+    inherit_tags = [ "hostname" ]
+    oid = "CISCO-ENVMON-MIB::ciscoEnvMonTemperatureStatusTable"
+
+    [[inputs.snmp.table.field]]
+      name = "temp"
+      oid = "CISCO-ENVMON-MIB::ciscoEnvMonTemperatureStatusValue"
+
+#    [[inputs.snmp.field]]
+#      name = "productId"
+#      oid = "1.3.6.1.4.1.9.2.1.73.0"
+
+#   [[inputs.snmp.field]]
+#    name = "cpmCPUTotal5min"
+#    oid = ".1.3.6.1.4.1.9.9.109.1.1.1.1.5"
+
+[[outputs.influxdb_v2]]
+  urls = [ "http://{{influx_ip}}:{{influx_port}}" ]
+  token = "$INFLUXDB_TOKEN"
+  organization = "GOLDENBYTE"
+  bucket = "GOLDENBYTE-SNMP-BUCKET"
