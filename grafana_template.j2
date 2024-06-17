@@ -227,7 +227,14 @@
                   "key": "agent_host::tag",
                   "operator": "=",
                   "value": "{{device.interfaces[0][2]}}"
+                },
+                {
+                  "condition": "AND",
+                  "key": "ifName::tag",
+                  "operator": "=",
+                  "value": "{{device.interfaces[loop.index0][1]}}"
                 }
+
               ]
             }
           ],
@@ -410,6 +417,12 @@
                   "key": "agent_host::tag",
                   "operator": "=",
                   "value": "{{device.interfaces[0][2]}}"
+                },
+		{
+                  "condition": "AND",
+                  "key": "ifName::tag",
+                  "operator": "=",
+                  "value": "{{device.interfaces[loop.index0][1]}}"
                 }
               ]
             }
